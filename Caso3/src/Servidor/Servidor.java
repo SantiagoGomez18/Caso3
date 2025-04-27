@@ -1,4 +1,5 @@
 package Servidor;
+
 import java.io.*;
 import java.net.*;
 
@@ -9,7 +10,7 @@ public class Servidor {
         ServerSocket ss = null;
         boolean continuar = true;
 
-        System.out.println("Main Server ...");
+        System.out.println("Main Server iniciado...");
 
         try {
             ss = new ServerSocket(PUERTO);
@@ -17,30 +18,21 @@ public class Servidor {
             e.printStackTrace();
             System.exit(-1);
         }
-//:v
+
         while (continuar) {
-            // crear el socket en el lado servidor
-            // queda bloqueado esperando a que llegue un cliente
-            Socket socket = ss.accept();
-
             try {
-                // se conectan los flujos, tanto de salida como de entrada
-                PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader lector = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));
+                Socket socket = ss.accept();
+                System.out.println("Nueva conexión aceptada. Creando servidor delegado...");
 
-                // Pasan cositas
-                ProtocoloServidor.procesar(lector, escritor, socket);
+                DataInputStream dataIn = new DataInputStream(socket.getInputStream());
+                DataOutputStream dataOut = new DataOutputStream(socket.getOutputStream());
 
-                // se cierran los flujos y el socket
-                escritor.close();
-                lector.close();
-                socket.close();
+                ServidorDelegado delegado = new ServidorDelegado(socket, dataIn, dataOut);
+                delegado.start();
+
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error al manejar conexión: " + e.getMessage());
             }
         }
     }
-
-
 }

@@ -1,40 +1,65 @@
 package Cliente;
 
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.IOException;
+
 public class Cliente {
     public static final int PUERTO = 8080;
     public static final String HOST = "localhost";
 
     public static void main(String args[]) throws IOException {
-        Socket socket = null;
-        PrintWriter escritor = null;
-        BufferedReader lector = null;
-
         System.out.println("Cliente ...");
 
-        try{
-            // Crear el socket en el lado cliente
-            socket = new Socket(HOST, PUERTO);
-            escritor = new PrintWriter(socket.getOutputStream(), true);
-            lector = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-        }catch(Exception e){
+        BufferedReader entradaConsola = new BufferedReader(new InputStreamReader(System.in));
+
+        try {
+            System.out.println("Seleccione el modo de operación:");
+            System.out.println("1. Cliente iterativo");
+            System.out.println("2. Cliente concurrente");
+            System.out.println("0. Salir");
+            System.out.print("Ingrese su opción: ");
+
+            String opcion = entradaConsola.readLine();
+
+            if (opcion.equals("0")) {
+                System.out.println("Saliendo del cliente...");
+                return;
+            }
+
+            if (opcion.equals("1")) {
+                // Cliente iterativo normal
+                Socket socket = new Socket(HOST, PUERTO);
+                DataInputStream dataIn = new DataInputStream(socket.getInputStream());
+                DataOutputStream dataOut = new DataOutputStream(socket.getOutputStream());
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
+
+                ProtocoloCliente.procesarIterativo(entrada, dataIn, dataOut, socket);
+
+                entrada.close();
+                dataIn.close();
+                dataOut.close();
+                socket.close();
+
+            } else if (opcion.equals("2")) {
+                // Cliente concurrente
+                System.out.print("¿Cuántos clientes concurrentes desea lanzar? Puede elejir entre los numeros 4,16,32,64: ");
+                int cantidadClientes = Integer.parseInt(entradaConsola.readLine());
+
+                for (int i = 0; i < cantidadClientes; i++) {
+                    ClienteConcurrente cliente = new ClienteConcurrente(HOST, PUERTO);
+                    cliente.start();
+                }
+
+            } else {
+                System.out.println("Opción inválida. Terminando programa.");
+                System.exit(1);
+            }
+
+            entradaConsola.close();
+
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
         }
-
-        BufferedReader entrada = new BufferedReader(new java.io.InputStreamReader(System.in));
-        
-        // Pasan cositas
-        ProtocoloCliente.procesar(entrada, lector, escritor, socket);
-
-        // se cierran los flujos y el socket
-        entrada.close();    
-        escritor.close();
-        lector.close();
-        socket.close();
     }
-
 }
