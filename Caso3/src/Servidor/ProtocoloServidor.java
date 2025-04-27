@@ -192,10 +192,7 @@ public class ProtocoloServidor {
             System.out.println("==================================\n");
 
             // si es concurrente
-            if (cantidadConsultas == 1) {
-                RegistroTiemposConcurrente.registrarTiempos(
-                        tiempoTotalFirma, tiempoTotalCifrado, tiempoTotalVerificacion, tiempoTotalCifradoAsimetrico);
-            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
