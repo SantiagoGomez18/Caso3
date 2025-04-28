@@ -321,7 +321,7 @@ public class ProtocoloCliente {
     }
 
     private static PublicKey cargarLlavePub() throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream("Caso3/src/Llaves/llave_publica.key");
+        FileInputStream fis = new FileInputStream("Caso3/Caso3/src/llaves/llave_publica.key");
         ObjectInputStream ois = new ObjectInputStream(fis);
         PublicKey key = (PublicKey) ois.readObject();
         ois.close();

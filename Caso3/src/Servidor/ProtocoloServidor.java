@@ -228,7 +228,7 @@ public class ProtocoloServidor {
     }
 
     private static PrivateKey cargarLlavePriv() throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream("Caso3/src/llaves/llave_privada.key");
+        FileInputStream fis = new FileInputStream("Caso3/Caso3/src/llaves/llave_privada.key");
         ObjectInputStream ois = new ObjectInputStream(fis);
         PrivateKey key = (PrivateKey) ois.readObject();
         ois.close();
