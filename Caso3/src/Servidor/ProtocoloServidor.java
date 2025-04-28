@@ -191,8 +191,15 @@ public class ProtocoloServidor {
             System.out.println("Tiempo total de cifrado respuesta (ns): " + tiempoTotalCifradoAsimetrico);
             System.out.println("==================================\n");
 
-            // si es concurrente
-
+            // Registrar si es concurrente
+            if (cantidadConsultas == 1) {
+                RegistroTiemposConcurrente.registrarTiempos(
+                        tiempoTotalFirma,
+                        tiempoTotalCifrado,
+                        tiempoTotalVerificacion,
+                        tiempoTotalCifradoAsimetrico);
+                RegistroTiemposConcurrente.mostrarPromedios();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

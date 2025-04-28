@@ -3,41 +3,45 @@ package Servidor;
 public class RegistroTiemposConcurrente {
 
     private static long totalFirma = 0;
-    private static long totalCifrado = 0;
+    private static long totalCifradoTabla = 0;
     private static long totalVerificacion = 0;
-    private static long totalCifradoAsimetrico = 0;
-    private static int cantidadClientes = 0;
+    private static long totalCifradoRespuesta = 0;
+    private static int totalClientes = 0;
 
-    public static synchronized void registrarTiempos(long firma, long cifrado, long verificacion, long cifradoAsim) {
-        totalFirma += firma;
-        totalCifrado += cifrado;
-        totalVerificacion += verificacion;
-        totalCifradoAsimetrico += cifradoAsim;
-        cantidadClientes++;
+    public static synchronized void registrarTiempos(long tiempoFirma, long tiempoCifrado, long tiempoVerificacion,
+            long tiempoCifradoRespuesta) {
+        totalFirma += tiempoFirma;
+        totalCifradoTabla += tiempoCifrado;
+        totalVerificacion += tiempoVerificacion;
+        totalCifradoRespuesta += tiempoCifradoRespuesta;
+        totalClientes++;
     }
 
-    public static synchronized void imprimirResultados() {
-        if (cantidadClientes == 0) {
-            System.out.println("No se registraron tiempos concurrentes.");
+    public static void mostrarPromedios() {
+        if (totalClientes == 0) {
+            System.out.println("\n====== No se registraron tiempos concurrentes ======\n");
             return;
         }
 
-        System.out.println("\n====== Resultado de Tiempos Concurrentes ======");
-        System.out.println("Clientes concurrentes: " + cantidadClientes);
-        System.out.println("Tiempo total de firma (ms): " + totalFirma);
-        System.out.println("Tiempo total de cifrado tabla (ms): " + totalCifrado);
-        System.out.println("Tiempo total de verificación (ms): " + totalVerificacion);
-        System.out.println("Tiempo total de cifrado respuesta (ms): " + totalCifradoAsimetrico);
-        System.out.println("==================================\n");
+        long promedioFirma = totalFirma / totalClientes;
+        long promedioCifradoTabla = totalCifradoTabla / totalClientes;
+        long promedioVerificacion = totalVerificacion / totalClientes;
+        long promedioCifradoRespuesta = totalCifradoRespuesta / totalClientes;
 
-        reset();
+        System.out.println("\n====== Promedios de Tiempos (Concurrentes) ======");
+        System.out.println("Clientes Concurrentes: " + totalClientes);
+        System.out.println("Promedio Firma (ns): " + promedioFirma);
+        System.out.println("Promedio Cifrado Tabla (ns): " + promedioCifradoTabla);
+        System.out.println("Promedio Verificación (ns): " + promedioVerificacion);
+        System.out.println("Promedio Cifrado Respuesta (ns): " + promedioCifradoRespuesta);
+        System.out.println("==================================\n");
     }
 
-    private static void reset() {
+    public static void resetear() {
         totalFirma = 0;
-        totalCifrado = 0;
+        totalCifradoTabla = 0;
         totalVerificacion = 0;
-        totalCifradoAsimetrico = 0;
-        cantidadClientes = 0;
+        totalCifradoRespuesta = 0;
+        totalClientes = 0;
     }
 }

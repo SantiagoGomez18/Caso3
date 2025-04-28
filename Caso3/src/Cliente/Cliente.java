@@ -3,6 +3,8 @@ package Cliente;
 import java.io.*;
 import java.net.Socket;
 
+import Servidor.RegistroTiemposConcurrente;
+
 public class Cliente {
     public static final int PUERTO = 8080;
     public static final String HOST = "localhost";
@@ -42,13 +44,18 @@ public class Cliente {
 
             } else if (opcion.equals("2")) {
                 // Cliente concurrente
-                System.out.print("¿Cuántos clientes concurrentes desea lanzar? Puede elejir entre los numeros 4,16,32,64: ");
+                System.out.print(
+                        "¿Cuántos clientes concurrentes desea lanzar? Puede elejir entre los numeros 4,16,32,64: ");
                 int cantidadClientes = Integer.parseInt(entradaConsola.readLine());
 
                 for (int i = 0; i < cantidadClientes; i++) {
+                    Thread.sleep(50);
                     ClienteConcurrente cliente = new ClienteConcurrente(HOST, PUERTO);
                     cliente.start();
+
                 }
+
+                RegistroTiemposConcurrente.mostrarPromedios();
 
             } else {
                 System.out.println("Opción inválida. Terminando programa.");
