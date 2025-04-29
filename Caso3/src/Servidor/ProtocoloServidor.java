@@ -95,6 +95,14 @@ public class ProtocoloServidor {
             long inicioCifradoTabla = System.nanoTime();
             byte[] serviciosCifrados = Cifrados.Simetrico.cifrar(AES, iv, servicios.toString());
             tiempoTotalCifrado = (System.nanoTime() - inicioCifradoTabla);
+            Long tiempofinaltabla = System.nanoTime();
+            Long tf = tiempofinaltabla - inicioCifradoTabla;
+            System.out.println("tiempo total cifrado tabla simetrico: " + tf);
+
+            long asimetrico = System.nanoTime();
+            byte[] a = Cifrados.Asimetrico.cifrar(llavePrivada, "RSA", servicios.toString());
+            Long tiempoTotalCifradoa = (System.nanoTime() - asimetrico);
+            System.out.println("Tiempo asimetrico tabla de servicio: " + tiempoTotalCifradoa);
 
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(HMAC);
@@ -160,6 +168,13 @@ public class ProtocoloServidor {
                     long inicioCifradoRespuesta = System.nanoTime();
                     byte[] respuestaCifrada = Cifrados.Simetrico.cifrar(AES, iv, respuestaServicio);
                     tiempoTotalCifradoAsimetrico += (System.nanoTime() - inicioCifradoRespuesta);
+                    System.out.println(
+                            "Tiempo cifrado respuesta simetrica: " + (System.nanoTime() - inicioCifradoRespuesta));
+
+                    long inicioCifradorespuestaasmin = System.nanoTime();
+                    byte[] respuestaCifradaasmin = Cifrados.Simetrico.cifrar(AES, iv, respuestaServicio);
+                    Long tiempofinal = System.nanoTime() - inicioCifradorespuestaasmin;
+                    System.out.println("Tiempo cifrado respuesta asimetrica: " + tiempofinal);
 
                     mac.init(HMAC);
                     byte[] hmacRespuesta = mac.doFinal(respuestaCifrada);
